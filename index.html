@@ -1,492 +1,410 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Banana Bread Shirt – Focus Surfwear</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Lupita Pizzaria — Menu</title>
+
+<!--
+  ============================================================
+  LUPITA PIZZARIA — AR menu (mimics the printed menu)
+  ------------------------------------------------------------
+  - Table QR link:  https://your-site.com/lupita-menu.html?table=7
+  - Every dish has a "View on your table" button -> 3D preview ->
+    phone AR at life size. Right now all dishes load the same
+    ASTRONAUT placeholder so the flow works end to end.
+  - Swap real models later via the `glb` (Android/iPhone-WebXR)
+    and `usdz` (iPhone Quick Look) fields in the MENU data below.
+  - AR needs HTTPS on a real phone (host it on Netlify/Vercel/etc).
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
 <style>
   :root{
-    --black:#000;
-    --white:#fff;
-    --banner-text:#e3a6a0;   /* salmon text on the black bar */
-    --ink:#1a1a1a;
-    --muted:#6b6b6b;
-    --line:#dcdcdc;
-    --line-soft:#ededed;
-    --sold:#b9b9b9;
-    --cookie-bg:#eef3ee;
+    --paper:#f6c93e;      /* Lupita marigold */
+    --ink:#161310;        /* near-black */
+    --ink-soft:rgba(22,19,16,.66);
+    --new:#e0392b;        /* red NEW starburst */
+    --heat:#c0392b;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-text-size-adjust:100%}
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
   body{
-    font-family:'Poppins',system-ui,sans-serif;
+    background:var(--paper);
     color:var(--ink);
-    background:var(--white);
-    line-height:1.5;
-    padding-bottom:70px; /* space for cookie bar */
+    font-family:"Poppins", system-ui, sans-serif;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:env(safe-area-inset-bottom);
   }
-  a{color:inherit;text-decoration:none}
-  img{max-width:100%;display:block}
 
-  /* ---------- top banner ---------- */
-  .topbar{
-    background:var(--black);
-    color:var(--banner-text);
-    font-size:14px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    position:relative;
-    padding:11px 24px;
-  }
-  .topbar .promo{font-weight:500;letter-spacing:.2px}
-  .topbar .selectors{
-    position:absolute;right:24px;top:50%;transform:translateY(-50%);
-    display:flex;gap:26px;align-items:center;
-  }
-  .topbar .sel{display:flex;align-items:center;gap:7px;cursor:pointer;color:var(--banner-text)}
-  .topbar .sel svg{width:11px;height:11px}
-  @media(max-width:900px){ .topbar .selectors{display:none} }
-
-  /* ---------- header ---------- */
+  /* ---------- top bar ---------- */
   header{
-    border-bottom:1px solid var(--line-soft);
-    padding:22px 40px;
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 20px; padding-top:calc(12px + env(safe-area-inset-top));
+    background:rgba(246,201,62,.92); backdrop-filter:blur(8px);
+    border-bottom:2px solid var(--ink);
   }
-  .header-inner{
-    max-width:1400px;margin:0 auto;
-    display:flex;align-items:center;justify-content:space-between;gap:24px;
+  .brand{ display:flex; flex-direction:column; line-height:1; }
+  .brand .name{
+    font-weight:300; font-size:26px; letter-spacing:.28em; padding-left:.28em;
+    color:transparent; -webkit-text-stroke:1.4px var(--ink);
   }
-  .logo{
-    font-weight:700;font-size:34px;letter-spacing:2px;line-height:1;
-    display:flex;flex-direction:column;align-items:flex-start;
+  .brand .sub{ font-weight:300; font-size:10px; letter-spacing:.42em; padding-left:.42em; margin-top:4px; }
+  .seat{ font-size:12px; font-weight:600; border:2px solid var(--ink); border-radius:2px; padding:5px 11px; white-space:nowrap; }
+
+  /* ---------- intro strip ---------- */
+  .intro{ max-width:900px; margin:0 auto; padding:22px 20px 6px; }
+  .intro p{ margin:0; font-weight:500; font-size:15px; max-width:60ch; }
+  .intro .en{ font-style:italic; font-weight:400; color:var(--ink-soft); font-size:13.5px; margin-top:2px; }
+
+  /* ---------- layout ---------- */
+  main{ max-width:900px; margin:0 auto; padding:10px 20px 64px; }
+
+  .section-head{
+    display:flex; align-items:center; gap:14px;
+    margin:34px 0 18px; scroll-margin-top:96px;
   }
-  .logo small{font-size:8px;letter-spacing:6px;font-weight:500;color:var(--muted);margin-top:2px}
-  nav{display:flex;gap:34px;font-size:15px;font-weight:500;flex:1;justify-content:center}
-  nav a:hover{opacity:.6}
-  .icons{display:flex;gap:22px;align-items:center}
-  .icons svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.6;cursor:pointer}
-  @media(max-width:900px){
-    header{padding:16px 20px}
-    nav{display:none}
-    .logo{font-size:26px}
+  .section-head h2{
+    font-weight:600; font-size:22px; letter-spacing:.16em; margin:0; white-space:nowrap;
+  }
+  .section-head .rule{
+    flex:1; height:0; border-top:2px dashed var(--ink); opacity:.85;
   }
 
-  /* ---------- product layout ---------- */
-  .product{
-    max-width:1400px;margin:0 auto;padding:40px;
-    display:grid;grid-template-columns:1.15fr 1fr;gap:56px;align-items:start;
-  }
-  .gallery{display:flex;flex-direction:column;gap:16px}
-  .gallery img{width:100%;border-radius:2px;background:#f4f4f4}
+  /* two columns on wide screens, one on phones (the real use case) */
+  .grid{ display:grid; grid-template-columns:1fr; gap:22px; }
+  @media (min-width:720px){ .grid{ grid-template-columns:1fr 1fr; column-gap:40px; } }
 
-  .info{position:sticky;top:24px}
-  .vendor{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-  .title{font-size:52px;font-weight:600;line-height:1.05;margin-bottom:22px}
-  .price-row{display:flex;align-items:center;gap:14px;margin-bottom:10px}
-  .price{font-size:24px;font-weight:500}
-  .badge{
-    background:var(--black);color:var(--white);
-    font-size:13px;padding:5px 13px;border-radius:20px;font-weight:500;
+  .item{ break-inside:avoid; }
+  .name-row{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:7px; }
+  .name-box{
+    display:inline-block; background:var(--ink); color:#fdf4dd;
+    font-weight:700; font-size:15px; letter-spacing:.06em;
+    padding:5px 11px 4px;
   }
-  .tax{font-size:14px;color:var(--muted);margin-bottom:28px}
-  .tax a{text-decoration:underline}
+  .desc{ font-weight:600; font-size:14px; margin:0; max-width:46ch; }
+  .desc.en{ font-weight:400; font-style:italic; color:var(--ink-soft); margin-top:2px; }
 
-  .field-label{font-size:15px;margin-bottom:12px}
-  .sizes{display:flex;gap:12px;margin-bottom:30px;flex-wrap:wrap}
-  .size{
-    min-width:62px;height:52px;padding:0 16px;
-    border:1px solid var(--line);background:var(--white);
-    border-radius:26px;font-family:inherit;font-size:15px;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;position:relative;
-    transition:.15s;
-  }
-  .size:hover{border-color:#9a9a9a}
-  .size.selected{background:var(--black);color:var(--white);border-color:var(--black)}
-  /* sold-out variant styling: struck through */
-  .size.sold{color:var(--sold)}
-  .size.sold.selected{color:var(--white)}
-  .size.sold::after{
-    content:"";position:absolute;left:14%;right:14%;top:50%;height:1px;
-    background:currentColor;opacity:.7;transform:rotate(-12deg);
+  /* NEW starburst */
+  .badge-new{
+    position:relative; width:34px; height:34px; flex:0 0 auto;
+    background:var(--new); color:#fff; font-size:9px; font-weight:700; letter-spacing:.03em;
+    display:grid; place-items:center; transform:rotate(-8deg);
+    clip-path:polygon(50% 0,61% 12%,76% 6%,78% 22%,94% 22%,88% 37%,100% 47%,88% 58%,96% 73%,80% 74%,76% 90%,61% 82%,50% 96%,39% 82%,24% 90%,20% 74%,4% 73%,12% 58%,0 47%,12% 37%,6% 22%,22% 22%,24% 6%,39% 12%);
   }
 
-  .qty-wrap{margin-bottom:26px}
-  .qty{
-    display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;
-    height:52px;overflow:hidden;
-  }
-  .qty button{
-    width:48px;height:100%;border:none;background:none;font-size:20px;cursor:pointer;color:var(--ink);
-  }
-  .qty input{
-    width:56px;height:100%;border:none;text-align:center;font-family:inherit;font-size:16px;
-    -moz-appearance:textfield;
-  }
-  .qty input::-webkit-outer-spin-button,.qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  /* diet / heat markers */
+  .marks{ display:inline-flex; gap:5px; align-items:center; }
+  .mk{ font-size:11px; font-weight:600; border:1.5px solid var(--ink); border-radius:2px; padding:1px 6px; }
+  .mk.heat{ border:none; padding:0; font-size:14px; letter-spacing:1px; }
 
-  .btn{
-    width:100%;height:56px;border-radius:8px;font-family:inherit;font-size:16px;font-weight:500;
-    cursor:pointer;margin-bottom:14px;
+  /* AR button */
+  .ar-btn{
+    margin-top:11px;
+    display:inline-flex; align-items:center; gap:8px;
+    font:inherit; font-weight:600; font-size:13px; letter-spacing:.02em;
+    color:var(--paper); background:var(--ink); border:2px solid var(--ink);
+    border-radius:999px; padding:8px 15px; cursor:pointer;
+    transition:background .14s, color .14s, transform .1s;
   }
-  .btn-sold{background:var(--white);border:1px solid var(--line);color:var(--muted);cursor:not-allowed}
-  .btn-buy{background:var(--black);border:1px solid var(--black);color:var(--white)}
-  .btn-buy:hover{opacity:.88}
+  .ar-btn:hover{ background:var(--paper); color:var(--ink); }
+  .ar-btn:active{ transform:scale(.97); }
+  .ar-btn:focus-visible{ outline:3px solid var(--new); outline-offset:2px; }
+  .ar-btn svg{ width:15px; height:15px; }
 
-  .features{margin-top:30px;padding-left:20px;font-size:16px;line-height:2}
-  .features strong{font-weight:600}
+  /* plain lists (extras / sauces / dessert-note) */
+  .plainlist{ columns:2; column-gap:36px; }
+  .plainlist .li{ break-inside:avoid; margin-bottom:12px; }
+  .plainlist .p{ font-weight:600; font-size:14px; }
+  .plainlist .e{ font-weight:400; font-style:italic; color:var(--ink-soft); font-size:12.5px; }
 
-  .share{margin-top:26px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;cursor:pointer}
-  .share svg{width:17px;height:17px;stroke:var(--ink);fill:none;stroke-width:1.6}
+  /* legend */
+  .legend{ display:flex; gap:22px; flex-wrap:wrap; margin-top:40px; padding-top:16px; border-top:2px dashed var(--ink); font-size:12px; font-weight:500; }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
 
-  @media(max-width:900px){
-    .product{grid-template-columns:1fr;gap:32px;padding:24px 20px}
-    .info{position:static}
-    .title{font-size:38px}
+  /* ---------- AR sheet ---------- */
+  .sheet-backdrop{
+    position:fixed; inset:0; z-index:50; display:none;
+    align-items:flex-end; justify-content:center;
+    background:rgba(22,19,16,.55); backdrop-filter:blur(3px);
   }
+  .sheet-backdrop.open{ display:flex; }
+  .sheet{
+    width:100%; max-width:520px; background:var(--paper);
+    border-top:3px solid var(--ink);
+    border-top-left-radius:20px; border-top-right-radius:20px;
+    padding:12px 18px calc(20px + env(safe-area-inset-bottom));
+    transform:translateY(100%); animation:rise .26s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  @keyframes rise{ to{ transform:translateY(0); } }
+  .grip{ width:42px; height:4px; background:var(--ink); opacity:.5; border-radius:9px; margin:2px auto 12px; }
+  .sheet-top{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .sheet-title{ font-weight:700; font-size:17px; letter-spacing:.04em; margin:0; text-transform:uppercase; }
+  .x{ background:none; border:2px solid var(--ink); color:var(--ink); border-radius:999px; width:34px; height:34px; font-size:18px; font-weight:600; cursor:pointer; flex:0 0 auto; }
+  .x:focus-visible{ outline:3px solid var(--new); outline-offset:2px; }
 
-  /* ---------- size finder ---------- */
-  .size-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-  .finder-link{
-    background:none;border:none;font-family:inherit;font-size:14px;font-weight:500;
-    cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--ink);
-    border-bottom:1px solid var(--ink);padding:0 0 1px;line-height:1.2;
+  model-viewer{
+    width:100%; height:330px; margin-top:12px; border:2px solid var(--ink); border-radius:12px;
+    background:radial-gradient(120% 100% at 50% 0%, #2b2620, #141110);
+    --poster-color:transparent;
   }
-  .finder-link:hover{opacity:.6}
+  .mv-ar{
+    position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+    display:inline-flex; align-items:center; gap:8px;
+    font:inherit; font-weight:600; font-size:14px; color:var(--ink);
+    background:var(--paper); border:2px solid var(--ink); border-radius:999px;
+    padding:10px 20px; cursor:pointer;
+  }
+  .mv-ar svg{ width:17px; height:17px; }
+  .hint{ text-align:center; font-size:12px; font-style:italic; color:var(--ink-soft); margin:11px 0 0; }
 
-  .size.reco-hit{box-shadow:0 0 0 2px var(--black);border-color:var(--black)}
-
-  .reco{
-    background:#f6f6f6;border:1px solid var(--line);border-radius:10px;
-    padding:16px 18px;margin:-14px 0 26px;font-size:15px;
+  @media (prefers-reduced-motion: reduce){
+    .sheet{ animation:none; transform:none; }
+    *{ transition:none !important; }
   }
-  .reco b{font-size:17px}
-  .reco .reco-note{color:var(--muted);font-size:13.5px;margin-top:5px}
-
-  /* modal */
-  .overlay{
-    position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;
-    display:none;align-items:center;justify-content:center;padding:20px;
-  }
-  .overlay.open{display:flex}
-  .modal{
-    background:var(--white);border-radius:16px;width:100%;max-width:460px;
-    max-height:92vh;overflow:auto;padding:30px 30px 26px;position:relative;
-  }
-  .modal h2{font-size:24px;font-weight:600;margin-bottom:4px}
-  .modal .sub{font-size:14px;color:var(--muted);margin-bottom:24px}
-  .modal-close{
-    position:absolute;top:18px;right:18px;background:none;border:none;font-size:26px;
-    cursor:pointer;line-height:1;color:var(--muted);
-  }
-  .q{margin-bottom:20px}
-  .q > label{display:block;font-size:14px;font-weight:500;margin-bottom:9px}
-  .seg{display:flex;gap:8px;flex-wrap:wrap}
-  .seg button{
-    flex:1;min-width:80px;padding:11px 8px;border:1px solid var(--line);background:var(--white);
-    border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;transition:.12s;
-  }
-  .seg button:hover{border-color:#9a9a9a}
-  .seg button.on{background:var(--black);color:var(--white);border-color:var(--black)}
-  .slider-row{display:flex;align-items:center;gap:14px}
-  .slider-row input[type=range]{flex:1;accent-color:var(--black)}
-  .val-edit{display:flex;align-items:baseline;gap:4px;min-width:74px;justify-content:flex-end}
-  .val-edit input{
-    width:44px;border:none;border-bottom:1px solid var(--line);background:none;
-    font-family:inherit;font-size:16px;font-weight:600;text-align:right;color:var(--ink);padding:2px 0;
-  }
-  .val-edit input:focus{outline:none;border-bottom-color:var(--black)}
-  .val-edit input::-webkit-outer-spin-button,.val-edit input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-  .val-edit input[type=number]{-moz-appearance:textfield}
-  .val-edit .unit{font-size:13px;color:var(--muted)}
-  .modal-submit{
-    width:100%;height:52px;background:var(--black);color:var(--white);border:none;
-    border-radius:10px;font-family:inherit;font-size:16px;font-weight:500;cursor:pointer;margin-top:6px;
-  }
-  .modal-submit:hover{opacity:.88}
-  .modal-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.5}
-
-  /* ---------- cookie bar ---------- */
-  .cookie{
-    position:fixed;left:0;right:0;bottom:0;background:var(--cookie-bg);
-    display:flex;align-items:center;justify-content:space-between;gap:20px;
-    padding:16px 34px;font-size:16px;z-index:50;flex-wrap:wrap;
-  }
-  .cookie a{text-decoration:underline}
-  .cookie-btns{display:flex;gap:12px}
-  .cookie-btns button{
-    font-family:inherit;font-size:15px;padding:12px 26px;border-radius:8px;cursor:pointer;border:1px solid var(--black);
-  }
-  .cookie-btns .prefs{background:var(--white)}
-  .cookie-btns .accept{background:var(--black);color:var(--white)}
-  @media(max-width:900px){ .cookie{padding:14px 18px;font-size:14px} }
 </style>
 </head>
 <body>
 
-  <!-- top banner -->
-  <div class="topbar">
-    <span class="promo">Free Shiping to Portugal over 100€</span>
-    <div class="selectors">
-      <span class="sel">Portugal | EUR €
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-      </span>
-      <span class="sel">Português (portugal)
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-      </span>
-    </div>
+<header>
+  <div class="brand">
+    <span class="name">LUPITA</span>
+    <span class="sub">pizzaria</span>
   </div>
+  <div class="seat" id="seat">Delivery</div>
+</header>
 
-  <!-- header -->
-  <header>
-    <div class="header-inner">
-      <a href="https://focussurfwear.com/" class="logo">FOCUS<small>SURFWEAR</small></a>
-      <nav>
-        <a href="https://focussurfwear.com/">PÁGINA INICIAL</a>
-        <a href="https://focussurfwear.com/collections/all">PRODUTOS</a>
-        <a href="https://focussurfwear.com/pages/contact">CONTACTOS</a>
-        <a href="https://focussurfwear.com/pages/about-us">ABOUT US</a>
-      </nav>
-      <div class="icons">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-        <svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
-      </div>
+<section class="intro">
+  <p>Tap “View on your table” on any dish to see it appear, full size, through your camera.</p>
+  <p class="en">No app needed — it opens right in your phone’s browser.</p>
+</section>
+
+<main id="menu"></main>
+
+<!-- AR sheet (one shared viewer, reconfigured per dish) -->
+<div class="sheet-backdrop" id="backdrop" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet">
+    <div class="grip"></div>
+    <div class="sheet-top">
+      <h2 class="sheet-title" id="sheetTitle">Dish</h2>
+      <button class="x" id="closeSheet" aria-label="Close">×</button>
     </div>
-  </header>
-
-  <!-- product -->
-  <main class="product">
-    <div class="gallery">
-      <img src="https://focussurfwear.com/cdn/shop/files/quadrados-05_4.png?v=1753108063&width=1445" alt="Banana Bread Shirt, worn">
-      <img src="https://focussurfwear.com/cdn/shop/files/quadrados-04_3.png?v=1753108063&width=1445" alt="Banana Bread Shirt, folded collar detail">
-    </div>
-
-    <div class="info">
-      <div class="vendor">Focus Surfwear</div>
-      <h1 class="title">Banana Bread Shirt</h1>
-
-      <div class="price-row">
-        <span class="price">€49,00 EUR</span>
-        <span class="badge">Esgotado</span>
-      </div>
-      <p class="tax">Impostos incluídos. <a href="https://focussurfwear.com/policies/shipping-policy">Envio</a> calculado na finalização da compra.</p>
-
-      <div class="size-head">
-        <span class="field-label" style="margin:0">Tamanho</span>
-        <button class="finder-link" onclick="openFinder()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-6 9 6-9 6-9-6z"/><path d="M3 15l9 6 9-6"/></svg>
-          Find my size
-        </button>
-      </div>
-      <div class="sizes" id="sizes">
-        <button class="size sold selected" data-size="S">S</button>
-        <button class="size sold" data-size="M">M</button>
-        <button class="size sold" data-size="L">L</button>
-        <button class="size sold" data-size="XL">XL</button>
-      </div>
-      <div id="reco" class="reco" hidden></div>
-
-      <div class="qty-wrap">
-        <div class="field-label">Quantidade</div>
-        <div class="qty">
-          <button onclick="stepQty(-1)" aria-label="Diminuir">−</button>
-          <input id="qty" type="number" value="1" min="1">
-          <button onclick="stepQty(1)" aria-label="Aumentar">+</button>
-        </div>
-      </div>
-
-      <button class="btn btn-sold" disabled>Esgotado</button>
-      <button class="btn btn-buy">Compre já!</button>
-
-      <ul class="features">
-        <li>Short-sleeved shirt</li>
-        <li>100% Cotton</li>
-        <li>Unisex</li>
-        <li>Made in <strong>Portugal</strong></li>
-      </ul>
-
-      <div class="share">
-        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
-        Share
-      </div>
-    </div>
-  </main>
-
-  <!-- size finder modal -->
-  <div class="overlay" id="overlay" onclick="if(event.target===this)closeFinder()">
-    <div class="modal" role="dialog" aria-modal="true" aria-label="Find my size">
-      <button class="modal-close" onclick="closeFinder()" aria-label="Close">×</button>
-      <h2>Find my size</h2>
-      <p class="sub">Answer five quick questions for a recommendation.</p>
-
-      <div class="q">
-        <label>Gender</label>
-        <div class="seg" data-group="gender">
-          <button data-val="female">Female</button>
-          <button data-val="male">Male</button>
-          <button data-val="unisex" class="on">Unisex</button>
-        </div>
-      </div>
-
-      <div class="q">
-        <label>Height</label>
-        <div class="slider-row">
-          <input type="range" id="f-height" min="140" max="210" value="175">
-          <div class="val-edit"><input type="number" id="n-height" min="140" max="210" value="175"><span class="unit">cm</span></div>
-        </div>
-      </div>
-
-      <div class="q">
-        <label>Weight</label>
-        <div class="slider-row">
-          <input type="range" id="f-weight" min="40" max="130" value="72">
-          <div class="val-edit"><input type="number" id="n-weight" min="40" max="130" value="72"><span class="unit">kg</span></div>
-        </div>
-      </div>
-
-      <div class="q">
-        <label>Age</label>
-        <div class="slider-row">
-          <input type="range" id="f-age" min="12" max="80" value="28">
-          <div class="val-edit"><input type="number" id="n-age" min="12" max="80" value="28"><span class="unit">yrs</span></div>
-        </div>
-      </div>
-
-      <div class="q">
-        <label>How do you like your shirts to fit?</label>
-        <div class="seg" data-group="fit">
-          <button data-val="fitted">Fitted</button>
-          <button data-val="regular" class="on">Regular</button>
-          <button data-val="baggy">Baggy</button>
-        </div>
-      </div>
-
-      <button class="modal-submit" onclick="runRecommendation()">Get my size</button>
-      <p class="modal-hint">Guidance only — based on typical measurements for this cut. Fit can vary from person to person.</p>
-    </div>
+    <model-viewer id="viewer" alt="3D preview of the selected dish"
+      camera-controls touch-action="pan-y" shadow-intensity="1" exposure="1"
+      ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor">
+      <button class="mv-ar" slot="ar-button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        View in your space
+      </button>
+    </model-viewer>
+    <p class="hint">Point at the table and move slowly to place the dish.</p>
   </div>
-
-  <!-- cookie bar -->
-  <div class="cookie" id="cookie">
-    <span>This website uses cookies to ensure you get the best experience on our website. <a href="#">Privacy Policy</a></span>
-    <div class="cookie-btns">
-      <button class="prefs" onclick="hideCookie()">Preferences</button>
-      <button class="accept" onclick="hideCookie()">Accept</button>
-    </div>
-  </div>
+</div>
 
 <script>
-  // size selection
-  document.querySelectorAll('.size').forEach(function(b){
-    b.addEventListener('click', function(){
-      document.querySelectorAll('.size').forEach(function(x){x.classList.remove('selected')});
-      b.classList.add('selected');
+    const PLACEHOLDER_GLB  = "pineapple.glb";
+    const PLACEHOLDER_USDZ = "pineapple.usdz";
+  // helper so every dish uses the placeholder for now:
+  const P = { glb:PLACEHOLDER_GLB, usdz:PLACEHOLDER_USDZ };
+
+  /* =========================================================
+     MENU DATA — transcribed from the Lupita menu.
+     tags: { new:true, veggie:true, vegan:true, heat:1|2 }
+     ar:true dishes get a "View on your table" button.
+     Extras & Sauces are modifiers, shown as a plain list (no AR).
+     ========================================================= */
+  const MENU = [
+    { cat:"STARTERS", type:"cards", items:[
+      { name:"CHEESY GARLIC BREAD", tags:{new:true}, ar:true, ...P,
+        pt:"mozzarella, queijo Viso, alho assado, chimichurri, manteiga de alho e grana padano",
+        en:"mozzarella, Viso cheese, roasted garlic, chimichurri, garlic butter and grana padano" },
+      { name:"BACON & JALAPEÑO BREAD", tags:{new:true}, ar:true, ...P,
+        pt:"mozzarella, queijo Viso, bacon, picles de jalapeño, cebola roxa, manteiga de alho e grana padano",
+        en:"mozzarella, Viso cheese, bacon, pickled jalapeño, red onion, garlic butter and grana padano" },
+    ]},
+
+    { cat:"PIZZAS", type:"cards", items:[
+      { name:"BOLOGNA (CALZONE)", tags:{new:true}, ar:true, ...P,
+        pt:"ragu bolognese, mozzarella, queijo Viso, tomate fresco, béchamel e grana padano",
+        en:"ragu bolognese, mozzarella, Viso cheese, fresh tomato, béchamel and grana padano" },
+      { name:"SHAKSHUKA", tags:{new:true, veggie:true}, ar:true, ...P,
+        pt:"tomate, mozzarella, harissa, cebola roxa, agrião, coentros, queijo Feta e gema de ovo",
+        en:"tomato, mozzarella, harissa, red onion, watercress, cilantro, Feta cheese and egg yolk" },
+      { name:"CARBONARA", tags:{new:true}, ar:true, ...P,
+        pt:"mozzarella, guanciale, pimenta preta, grana padano, pecorino e gema de ovo",
+        en:"mozzarella, guanciale, black pepper, grana padano, pecorino and egg yolk" },
+      { name:"SPICY AMATRICIANA", tags:{heat:2}, ar:true, ...P,
+        pt:"tomate, guanciale, alho, cebola roxa, picles de jalapeño, pecorino e chimichurri",
+        en:"tomato, guanciale, garlic, red onion, pickled jalapeño, pecorino and chimichurri" },
+      { name:"COURGETTE & BURRATA", tags:{veggie:true}, ar:true, ...P,
+        pt:"courgette, alho, pimenta preta, burrata, hortelã, azeite de manjericão e pecorino",
+        en:"zucchini, garlic, black pepper, burrata, mint, basil oil and pecorino" },
+      { name:"PEPPERONI", tags:{heat:2}, ar:true, ...P,
+        pt:"tomate, mozzarella, queijo Viso, pepperoni, picles de jalapeño e mel",
+        en:"tomato, mozzarella, Viso cheese, pepperoni, pickled jalapeño and honey" },
+      { name:"FUGAZZETA", tags:{new:true}, ar:true, ...P,
+        pt:"mozzarella, queijo Viso, cebola tostada, oregãos e presunto de porco 24m “Laborela”",
+        en:"mozzarella, Viso cheese, burnt white onion, oregano and 24m cured ham “Laborela”" },
+      { name:"COGUMELOS", tags:{veggie:true}, ar:true, ...P,
+        pt:"mozzarella, taleggio, cogumelos assados, creme de limão e vinho branco, pimenta preta, salsa e raspas de limão",
+        en:"mozzarella, taleggio, roasted mushrooms, white wine and lemon cream, black pepper, parsley and lemon zest" },
+      { name:"BRANCA", tags:{veggie:true}, ar:true, ...P,
+        pt:"mozzarella, cebola caramelizada, ricotta com limão, alho e azeite de manjericão",
+        en:"mozzarella, caramelized onions, lemon zest ricotta, garlic and basil oil" },
+      { name:"VEGAN", tags:{vegan:true}, ar:true, ...P,
+        glb:"pumpkin.glb", usdz:"pumpkin.usdz",
+        pt:"cebola caramelizada, cogumelos assados, vinagrete de nozes e passas, hortelã e raspas de limão",
+        en:"caramelized onions, roasted mushrooms, walnut and raisin vinaigrette, mint and lemon zest" },
+      { name:"ANANÁS", tags:{heat:1}, ar:true, ...P,
+        pt:"mozzarella, queijo Viso, ananás, bacon, picles de cebola roxa e coentros",
+        en:"mozzarella, Viso cheese, bacon, pineapple, pickled red onion and cilantro" },
+      { name:"MARGHERITA", tags:{veggie:true}, ar:true, ...P,
+        pt:"tomate, mozzarella, grana padano, manjericão e azeite extra-virgem",
+        en:"tomato, mozzarella, grana padano, fresh basil and extra-virgin olive oil" },
+      { name:"MARINARA", tags:{vegan:true}, ar:true, ...P,
+        pt:"tomate, alho, orégãos, manjericão e azeite",
+        en:"tomato, garlic, oregano, basil and olive oil" },
+    ]},
+
+    { cat:"DESSERT", type:"cards", items:[
+      { name:"CHEESECAKE", ar:true, ...P,
+        pt:"tarte de queijo", en:"cheesecake" },
+    ]},
+
+    { cat:"EXTRAS", type:"list", items:[
+      { pt:"picles de malagueta", en:"pickled chili" },
+      { pt:"manjericão", en:"basil" },
+      { pt:"anchovas", en:"anchovies" },
+      { pt:"cogumelos assados", en:"roasted mushrooms" },
+      { pt:"cebola caramelizada", en:"caramelized onions" },
+      { pt:"mozzarella", en:"" },
+      { pt:"bacon", en:"" },
+      { pt:"pepperoni", en:"" },
+      { pt:"burrata", en:"" },
+      { pt:"guanciale", en:"" },
+      { pt:"molho de tomate", en:"tomato sauce" },
+      { pt:"alho", en:"garlic" },
+    ]},
+
+    { cat:"SAUCES", type:"list", items:[
+      { pt:"ranch fumado", en:"smoked ranch" },
+      { pt:"cheese & garlic dip", en:"", tags:{new:true} },
+      { pt:"marinara", en:"" },
+      { pt:"chimichurri", en:"" },
+    ]},
+  ];
+
+  /* ---- table number from ?table= ---- */
+  const table = new URLSearchParams(location.search).get("table");
+  document.getElementById("seat").textContent = table
+    ? "Table " + String(table).replace(/[^0-9A-Za-z]/g,"")
+    : "Delivery";
+
+  /* ---- markers ---- */
+  function marks(tags){
+    if(!tags) return "";
+    let out = "";
+    if(tags.veggie) out += `<span class="mk">veggie</span>`;
+    if(tags.vegan)  out += `<span class="mk">vegan</span>`;
+    if(tags.heat)   out += `<span class="mk heat">${"🌶️".repeat(tags.heat)}</span>`;
+    return out ? `<span class="marks">${out}</span>` : "";
+  }
+  const newBadge = t => (t && t.new) ? `<span class="badge-new">NEW</span>` : "";
+
+  /* ---- build ---- */
+  const menu = document.getElementById("menu");
+  const dishIndex = [];
+
+  MENU.forEach(section => {
+    const head = document.createElement("div");
+    head.className = "section-head";
+    head.innerHTML = `<h2>${section.cat}</h2><span class="rule"></span>`;
+    menu.appendChild(head);
+
+    if(section.type === "list"){
+      const wrap = document.createElement("div");
+      wrap.className = "plainlist";
+      wrap.innerHTML = section.items.map(i => `
+        <div class="li">
+          <div class="p">${i.pt} ${newBadgeInline(i.tags)}</div>
+          ${i.en ? `<div class="e">${i.en}</div>` : ""}
+        </div>`).join("");
+      menu.appendChild(wrap);
+      return;
+    }
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    section.items.forEach(item => {
+      const id = dishIndex.push(item) - 1;
+      const el = document.createElement("div");
+      el.className = "item";
+      el.innerHTML = `
+        <div class="name-row">
+          <span class="name-box">${item.name}</span>
+          ${newBadge(item.tags)}
+          ${marks(item.tags)}
+        </div>
+        <p class="desc">${item.pt}</p>
+        ${item.en ? `<p class="desc en">${item.en}</p>` : ""}
+        ${item.ar ? `<button class="ar-btn" data-dish="${id}" aria-label="View ${item.name} on your table">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          View on your table
+        </button>` : ""}`;
+      grid.appendChild(el);
     });
+    menu.appendChild(grid);
   });
-  // quantity stepper
-  function stepQty(d){
-    var i = document.getElementById('qty');
-    var v = Math.max(1, (parseInt(i.value,10)||1) + d);
-    i.value = v;
+
+  // small NEW badge for list items (inline red dot with text)
+  function newBadgeInline(t){
+    return (t && t.new) ? `<span style="color:var(--new);font-weight:700;font-size:11px;">• NEW</span>` : "";
   }
-  function hideCookie(){ document.getElementById('cookie').style.display='none'; }
 
-  /* ---------- size finder ---------- */
-  var SIZES = ['S','M','L','XL'];
-  var choice = { gender:'unisex', fit:'regular' };
+  /* ---- legend ---- */
+  const legend = document.createElement("div");
+  legend.className = "legend";
+  legend.innerHTML = `
+    <span><b class="mk">veggie</b> vegetarian</span>
+    <span><b class="mk">vegan</b> vegan</span>
+    <span>🌶️ spicy</span>`;
+  menu.appendChild(legend);
 
-  // segmented-control selection
-  document.querySelectorAll('.seg').forEach(function(group){
-    group.querySelectorAll('button').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        group.querySelectorAll('button').forEach(function(b){b.classList.remove('on')});
-        btn.classList.add('on');
-        choice[group.dataset.group] = btn.dataset.val;
-      });
-    });
+  /* ---- AR sheet ---- */
+  const backdrop = document.getElementById("backdrop");
+  const viewer   = document.getElementById("viewer");
+  const title    = document.getElementById("sheetTitle");
+  let lastFocused = null;
+
+  document.addEventListener("click", e => {
+    const btn = e.target.closest(".ar-btn");
+    if(!btn) return;
+    const item = dishIndex[btn.dataset.dish];
+    lastFocused = btn;
+    title.textContent = item.name;
+    viewer.setAttribute("src", item.glb);
+    viewer.setAttribute("ios-src", item.usdz);
+    backdrop.classList.add("open");
+    document.body.style.overflow = "hidden";
+    document.getElementById("closeSheet").focus();
   });
 
-  // keep each slider and its editable number in sync (drag OR type)
-  function linkPair(key, min, max){
-    var range = document.getElementById('f-'+key);
-    var num   = document.getElementById('n-'+key);
-    range.addEventListener('input', function(){ num.value = range.value; });
-    num.addEventListener('input', function(){
-      if(num.value === '') return;      // allow the field to be cleared while typing
-      range.value = num.value;          // range clamps to its own min/max
-    });
-    num.addEventListener('change', function(){   // on blur / Enter, normalise the typed value
-      var v = parseInt(num.value, 10);
-      if(isNaN(v)) v = parseInt(range.value, 10);
-      v = Math.max(min, Math.min(max, v));
-      num.value = v; range.value = v;
-    });
+  function closeAR(){
+    backdrop.classList.remove("open");
+    document.body.style.overflow = "";
+    if(lastFocused) lastFocused.focus();
   }
-  linkPair('height', 140, 210);
-  linkPair('weight', 40, 130);
-  linkPair('age', 12, 80);
-
-  function openFinder(){ document.getElementById('overlay').classList.add('open'); }
-  function closeFinder(){ document.getElementById('overlay').classList.remove('open'); }
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeFinder(); });
-
-  function recommend(gender, height, weight, age, fit){
-    // Weight is the primary signal: linear map so ~55kg -> S centre (0), ~98kg -> XL centre (3)
-    var idx = (weight - 55) / ((98 - 55) / 3);
-    // Height nudge: taller frames trend one notch up, shorter down (relative to 175cm)
-    idx += (height - 175) * 0.02;
-    // Gender on a unisex cut: female frames usually sit a little smaller
-    if (gender === 'female') idx -= 0.4;
-    // Fit preference
-    if (fit === 'baggy')  idx += 1;
-    if (fit === 'fitted') idx -= 0.7;
-
-    var rounded = Math.round(idx);
-    if (rounded < 0) rounded = 0;
-    if (rounded > 3) rounded = 3;
-    var size = SIZES[rounded];
-
-    // Is it close to a boundary? offer an alternative
-    var alt = null;
-    var frac = idx - rounded;
-    if (frac > 0.28 && rounded < 3)      alt = SIZES[rounded + 1] + ' for a roomier fit';
-    else if (frac < -0.28 && rounded > 0) alt = SIZES[rounded - 1] + ' for a closer fit';
-
-    // Age is informational only
-    var ageNote = '';
-    if (age < 16)      ageNote = 'Still growing? You may want to size up if it needs to last.';
-    else if (age >= 65) ageNote = '';
-
-    return { size: size, alt: alt, ageNote: ageNote };
-  }
-
-  function runRecommendation(){
-    var height = +document.getElementById('f-height').value;
-    var weight = +document.getElementById('f-weight').value;
-    var age    = +document.getElementById('f-age').value;
-    var r = recommend(choice.gender, height, weight, age, choice.fit);
-
-    // select the recommended size in the picker
-    document.querySelectorAll('.size').forEach(function(b){
-      b.classList.toggle('selected', b.dataset.size === r.size);
-    });
-
-    var reco = document.getElementById('reco');
-    var line = 'We recommend size <b>' + r.size + '</b>';
-    if (r.alt) line += ' — or ' + r.alt + '.';
-    else line += '.';
-    var note = r.ageNote ? '<div class="reco-note">' + r.ageNote + '</div>'
-                         : '<div class="reco-note">Based on your height, weight and preferred fit.</div>';
-    reco.innerHTML = line + note;
-    reco.hidden = false;
-
-    closeFinder();
-    reco.scrollIntoView({ behavior:'smooth', block:'center' });
-  }
+  document.getElementById("closeSheet").addEventListener("click", closeAR);
+  backdrop.addEventListener("click", e => { if(e.target === backdrop) closeAR(); });
+  document.addEventListener("keydown", e => { if(e.key === "Escape") closeAR(); });
 </script>
 </body>
 </html>
